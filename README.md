@@ -34,6 +34,9 @@ wget -O /usr/local/bin/rke https://github.com/$(wget https://github.com/rancher/
 chmod +x /usr/local/bin/rke
 wget https://raw.githubusercontent.com/superseb/multipass-rke/master/multipass-rke.sh
 bash multipass-rke.sh
+curl -Lo /usr/local/bin/kubectl https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl
+chmod +x /usr/local/bin/kubectl
+kubectl --kubeconfig kube_config_* get nodes
 ```
 
 ## Clean up
