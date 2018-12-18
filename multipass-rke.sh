@@ -4,6 +4,7 @@
 # Name for the cluster/configuration files
 NAME=""
 # Ubuntu image to use (xenial/bionic)
+# Bionic only supports Docker 18.03 and higher
 IMAGE="xenial"
 # Full path, for example, /home/root/.ssh/id_rsa
 SSH_PRIVKEYFILE=""
@@ -22,6 +23,7 @@ DISK_MACHINE="10G"
 # How much memory to allocate to each machine
 MEMORY_MACHINE="1500M"
 # Docker version to install
+# Bionic only supports Docker 18.03 and higher
 DOCKER_VERSION="17.03"
 
 ## Nothing to change after this line
