@@ -24,3 +24,25 @@ This will (defaults):
 * Create one machine (configurable using `COUNT_MACHINE`) with 1 CPU (`CPU_MACHINE`), 10G disk (`DISK_MACHINE`) and 1500M of memory (`MEMORY_MACHINE`) using Ubuntu xenial (`IMAGE`)
 * Create cluster.yml file for RKE
 * Run `rke up` to create the cluster
+
+
+## Quickstart Ubuntu 16.04 droplet
+
+```
+sudo snap install multipass --beta --classic
+wget -O /usr/local/bin/rke https://github.com/$(wget https://github.com/rancher/rke/releases/latest -O - | egrep '/.*/.*/rke_linux-amd64' -o)
+chmod +x /usr/local/bin/rke
+wget https://raw.githubusercontent.com/superseb/multipass-rke/master/multipass-rke.sh
+bash multipass-rke.sh
+```
+
+## Clean up
+
+The files that are created are:
+
+* `$NAME-cloud-init.yaml`
+* `$NAME-cluster.yml`
+* `$NAME-id_rsa` (if `SSH_PRIVKEYFILE` is empty)
+* `$NAME-id_rsa.pub` (if `SSH_PRIVKEYFILE` is empty)
+
+You can clean up the instances by running `multipass delete rke-$NAME-{1,2,3} --purge` or (**WARNING** this deletes and purges all instances): `multipass delete --all --purge`
