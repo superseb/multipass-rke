@@ -5,7 +5,7 @@
 NAME=""
 # Ubuntu image to use (xenial/bionic)
 # Bionic only supports Docker 18.03 and higher
-IMAGE="xenial"
+IMAGE="bionic"
 # Full path, for example, /home/root/.ssh/id_rsa
 SSH_PRIVKEYFILE=""
 # Full path, for example, /home/root/.ssh/id_rsa.pub
@@ -17,14 +17,14 @@ RKE_PATH=""
 # How many machines to create
 COUNT_MACHINE="1"
 # How many CPUs to allocate to each machine
-CPU_MACHINE="1"
+CPU_MACHINE="2"
 # How much disk space to allocate to each machine
 DISK_MACHINE="10G"
 # How much memory to allocate to each machine
-MEMORY_MACHINE="1500M"
+MEMORY_MACHINE="4000M"
 # Docker version to install
 # Bionic only supports Docker 18.03 and higher
-DOCKER_VERSION="17.03"
+DOCKER_VERSION="19.03"
 
 ## Nothing to change after this line
 
@@ -36,7 +36,7 @@ ssh_authorized_keys:
 
 runcmd:
  - '\curl https://releases.rancher.com/install-docker/__DOCKER_VERSION__.sh | sh'
- - '\sudo usermod -a -G docker multipass'
+ - '\sudo usermod -a -G docker ubuntu'
 EOM
 
 if ! [ -x "$(command -v docker)" >/dev/null 2>&1 ]; then
@@ -87,7 +87,7 @@ echo "$CLOUDINIT_TEMPLATE" | sed -e "s^__SSH_PUBKEY__^$SSH_PUBKEY^" -e "s^__DOCK
 echo "Cloud-init is created at ${NAME}-cloud-init.yaml"
 
 for i in $(eval echo "{1..$COUNT_MACHINE}"); do
-    echo "Running multipass launch --cpus $CPU_MACHINE --disk $DISK_MACHINE --mem $MEMORY_MACHINE $IMAGE --name rke-$NAME-$i --cloud-init ${NAME}-cloud-init.yaml"                                                                                                                                           
+    echo "Running multipass launch --cpus $CPU_MACHINE --disk $DISK_MACHINE --mem $MEMORY_MACHINE $IMAGE --name rke-$NAME-$i --cloud-init ${NAME}-cloud-init.yaml"
     multipass launch --cpus $CPU_MACHINE --disk $DISK_MACHINE --mem $MEMORY_MACHINE $IMAGE --name rke-$NAME-$i --cloud-init "${NAME}-cloud-init.yaml"
     if [ $? -ne 0 ]; then
         echo "There was an error launching the instance"
@@ -110,9 +110,9 @@ echo "ssh_key_path: ${SSH_PRIVKEYFILE}" >> "${NAME}-cluster.yml"
 echo "nodes:" >> "${NAME}-cluster.yml"
 
 if hash docker >/dev/null 2>&1; then
-    multipass list --format json | docker run -e NAME --rm -i $JQIMAGE --arg NAME "$NAME" -r '.list[] | select((.state | contains("RUNNING")) and (.name | contains("rke-" + $NAME))) | "- address: " + .ipv4[] + "\n  user: multipass\n  role: [controlplane,worker,etcd]"' >> "${NAME}-cluster.yml"        
+    multipass list --format json | docker run -e NAME --rm -i $JQIMAGE --arg NAME "$NAME" -r '.list[] | select((.state | contains("Running")) and (.name | contains("rke-" + $NAME))) | "- address: " + .ipv4[] + "\n  user: ubuntu\n  role: [controlplane,worker,etcd]"' >> "${NAME}-cluster.yml"
 else
-    multipass list --format json | jq --arg NAME "$NAME" -r '.list[] | select((.state | contains("RUNNING")) and (.name | contains("rke-" + $NAME))) | "- address: " + .ipv4[] + "\n  user: multipass\n  role: [controlplane,worker,etcd]"' >> "${NAME}-cluster.yml"                                         
+    multipass list --format json | jq --arg NAME "$NAME" -r '.list[] | select((.state | contains("Running")) and (.name | contains("rke-" + $NAME))) | "- address: " + .ipv4[] + "\n  user: ubuntu\n  role: [controlplane,worker,etcd]"' >> "${NAME}-cluster.yml"
 fi
 
 echo "RKE cluster configuration file is created at ${NAME}-cluster.yml"
@@ -123,10 +123,10 @@ fi
 
 if [ -z $SSH_PASSPHRASE ]; then
     echo "Running rke up --config $NAME-cluster.yml"
-    $RKE_PATH up --config $NAME-cluster.yml
+    $RKE_PATH --debug up --config $NAME-cluster.yml
 else
     echo "Running rke up --config $NAME-cluster.yml --ssh-agent-auth"
-    $RKE_PATH up --config $NAME-cluster.yml --ssh-agent-auth
+    $RKE_PATH --debug up --config $NAME-cluster.yml --ssh-agent-auth
 fi
 
 echo "Cluster setup finished"
