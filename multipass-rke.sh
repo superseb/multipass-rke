@@ -3,9 +3,8 @@
 # Configure your settings
 # Name for the cluster/configuration files
 NAME=""
-# Ubuntu image to use (xenial/bionic)
-# Bionic only supports Docker 18.03 and higher
-IMAGE="bionic"
+# Ubuntu image to use (xenial/bionic/focal)
+IMAGE="focal"
 # Full path, for example, /home/root/.ssh/id_rsa
 SSH_PRIVKEYFILE=""
 # Full path, for example, /home/root/.ssh/id_rsa.pub

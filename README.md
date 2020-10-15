@@ -20,16 +20,16 @@ This will (defaults):
 
 * Generate random name for your cluster (configurable using `NAME`)
 * Generate SSH key for RKE to access the nodes (configurable using `SSH_PRIVKEYFILE`, `SSH_PUBKEYFILE` and `SSH_PASSPHRASE`)
-* Create cloud-init to add SSH public key to the machines and install Docker (`17.03` by default, configurable using `DOCKER_VERSION`)
-* Create one machine (configurable using `COUNT_MACHINE`) with 1 CPU (`CPU_MACHINE`), 10G disk (`DISK_MACHINE`) and 1500M of memory (`MEMORY_MACHINE`) using Ubuntu xenial (`IMAGE`)
+* Create cloud-init to add SSH public key to the machines and install Docker (`19.03` by default, configurable using `DOCKER_VERSION`)
+* Create one machine (configurable using `COUNT_MACHINE`) with 2 CPU (`CPU_MACHINE`), 10G disk (`DISK_MACHINE`) and 4000M of memory (`MEMORY_MACHINE`) using Ubuntu focal (`IMAGE`)
 * Create cluster.yml file for RKE
 * Run `rke up` to create the cluster
 
 
-## Quickstart Ubuntu 16.04 droplet
+## Quickstart Ubuntu 20.04 droplet
 
 ```
-sudo snap install multipass --beta --classic
+sudo snap install multipass
 wget -O /usr/local/bin/rke https://github.com/$(wget https://github.com/rancher/rke/releases/latest -O - | egrep '/.*/.*/rke_linux-amd64' -o)
 chmod +x /usr/local/bin/rke
 wget https://raw.githubusercontent.com/superseb/multipass-rke/master/multipass-rke.sh
