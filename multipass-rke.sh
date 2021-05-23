@@ -109,9 +109,9 @@ echo "ssh_key_path: ${SSH_PRIVKEYFILE}" >> "${NAME}-cluster.yml"
 echo "nodes:" >> "${NAME}-cluster.yml"
 
 if hash docker >/dev/null 2>&1; then
-    multipass list --format json | docker run -e NAME --rm -i $JQIMAGE --arg NAME "$NAME" -r '.list[] | select((.state | contains("Running")) and (.name | contains("rke-" + $NAME))) | "- address: " + .ipv4[] + "\n  user: ubuntu\n  role: [controlplane,worker,etcd]"' >> "${NAME}-cluster.yml"
+    multipass list --format json | docker run -e NAME --rm -i $JQIMAGE --arg NAME "$NAME" -r '.list[] | select((.state | contains("Running")) and (.name | contains("rke-" + $NAME))) | "- address: " + .ipv4[0] + "\n  user: ubuntu\n  role: [controlplane,worker,etcd]"' >> "${NAME}-cluster.yml"
 else
-    multipass list --format json | jq --arg NAME "$NAME" -r '.list[] | select((.state | contains("Running")) and (.name | contains("rke-" + $NAME))) | "- address: " + .ipv4[] + "\n  user: ubuntu\n  role: [controlplane,worker,etcd]"' >> "${NAME}-cluster.yml"
+    multipass list --format json | jq --arg NAME "$NAME" -r '.list[] | select((.state | contains("Running")) and (.name | contains("rke-" + $NAME))) | "- address: " + .ipv4[0] + "\n  user: ubuntu\n  role: [controlplane,worker,etcd]"' >> "${NAME}-cluster.yml"
 fi
 
 echo "RKE cluster configuration file is created at ${NAME}-cluster.yml"
