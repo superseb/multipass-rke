@@ -23,7 +23,7 @@ DISK_MACHINE="10G"
 MEMORY_MACHINE="4000M"
 # Docker version to install
 # Bionic only supports Docker 18.03 and higher
-DOCKER_VERSION="19.03"
+DOCKER_VERSION="20.10"
 
 ## Nothing to change after this line
 
